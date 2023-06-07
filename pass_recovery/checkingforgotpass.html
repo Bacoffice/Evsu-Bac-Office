@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.84.0">
+    <link rel="icon" href="../img/evsu_title_logo.png" type="image/x-icon" />
+    <title>Password Recovery</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Bootstrap core CSS -->
+<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      
+        .button-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 20px;
+        }
+
+        .form-floating {
+          margin-bottom: 1rem;
+        }
+
+
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="../css/signin.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script>
+  </head>
+  <body class="text-center">
+    
+<main class="form-signin">
+  <form>
+    <img class="mb-4" src="../img/forgot.svg" alt="" width="72" height="57">
+    <h1 class="h3 mb-3 fw-normal">Password Recovery</h1>
+
+    <br><p>Please Enter your Email Address and we will send you a link to recover your password</p>
+
+    <div class="form-floating mb-3">
+      <input type="email" class="form-control" id="email" placeholder="name@example.com">
+      <label for="email">Email address</label>
+    </div>
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit" id="reset-btn">Submit</button>
+    
+    <br><br><span ><a class="my-span" href="../login_pages/checkingofficer.html">Back to Sign In</a></span>
+    
+    <p class="mt-5 mb-3 text-muted">&copy; BAC-OFFICE 2022-2023</p>
+  </form>
+</main>
+
+  <script>
+    // setting up firebase with our website
+const firebaseApp = firebase.initializeApp({
+    apiKey: "AIzaSyALNdTu3ZkPJtluodw-6aSWsrmjFEHCp8I",
+    authDomain: "checking-officer.firebaseapp.com",
+    projectId: "checking-officer",
+    storageBucket: "checking-officer.appspot.com",
+    messagingSenderId: "224997300634",
+    appId: "1:224997300634:web:606c44eb8789a464ce4223",
+    measurementId: "G-V4SLYT2F6Y"
+});
+
+const auth = firebase.auth();
+
+var resetButton = document.getElementById('reset-btn');
+resetButton.addEventListener('click', function(event) {
+    event.preventDefault();
+    var email = document.getElementById('email').value;
+    firebase.auth().sendPasswordResetEmail(email)
+    .then(function() {
+      swal.fire('Success!', 'Password reset email sent!', 'success');
+      document.getElementById("email").value = "";
+    })
+    .catch(function(error) {
+      swal.fire('Error', 'Email does not exist', 'error');
+      document.getElementById("email").value = "";
+    });
+});
+  </script>
+    
+  </body>
+</html>

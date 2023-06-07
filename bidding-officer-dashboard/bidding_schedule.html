@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta charset="UTF-8">
+    <link rel="icon" href="../img/evsu_title_logo.png" type="image/x-icon" />
+    <title>Bidding Schedule of Pr</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="../css/styles.css" rel="stylesheet" /> 
+    <link rel="stylesheet" href="../css/add-update.css" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+  
+    <style>
+        .labs{
+            display: inline-block;
+            width: 100px;
+        }
+
+    </style>
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script>
+   </head>
+
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" onclick="Bidding_Dashboard(event)">Bidding Dashboard</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#!">Settings</a></li>
+                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="#!" id="logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" onclick="Bidding_Dashboard(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                            <div class="sb-sidenav-menu-heading">Interface</div>
+
+                            <a class="nav-link" onclick="Bidding_Schedule(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                BIDDING SCHEDULE
+                            </a>
+
+                            <a class="nav-link" onclick="For_Bidding(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                FOR BIDDING
+                            </a>
+
+                            </div>
+                            <!--<div class="sb-sidenav-menu-heading">Addons</div>
+                            <a class="nav-link" href="dashboard.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Tables
+                            </a>
+                        -->
+                        </div>
+                    
+                    <div class="sb-sidenav-footer">
+                        <div class="small" id="user">Logged in as:</div>
+                        BAC-Staff Officer
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <br><br>
+                        <h1 class="mt-4">Bidding Schedule</h1>
+                     
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                Bidding Schedule of Purchase Requests
+                            </div>
+                            
+                            <div class="card-body">
+                                <input type="text" id="searchbox-1" placeholder="Search Here">
+                                    <div class="table-responsive"> <!--Added rani naku I dunno the purpose yet-->
+                                        <table class="table table-primary text-black table-bordered" id='table-1'>
+                                            <thead>
+                                                <br>
+                                                <tr>
+                                                    <th>PR #</th>
+                                                    <th>Resolution #</th>
+                                                    <th>Resolution Remark</th>
+                                                    <th>Abstract Remark</th>
+                                                    <th>NSTP Coordinator</th>
+                                                    <th>Cultural and Arts Coordinator</th>
+                                                    <th>Head, HRMO</th>
+                                                    <th>Head, Research and Development</th>
+                                                    <th>Head, Administrative and Finance Services</th>
+                                                    <th>Campus Director</th>
+                                                    <th>Type of Bid Opening</th>
+                                                    <th>Bid-Opening Date</th>
+                                                    <th>Canvass Date</th>
+                                                    <th>Supplier Company/Establishment</th>
+                                                    <th>Date Updated/Submitted</th>
+                                                    <th>End User Office</th>
+                                                    <th>Requester's Name</th>
+                                                    <th>RFQ-Remarks</th>
+                                                    <th>RFQ-Date Processed (If Done)</th>
+                                                    <th>Less 50k?</th>
+                                                    <th>Philgeps Posting Date (If Above 50k)</th>
+                                                    <th>Lacking Documents</th>
+                                                    <th>Date Received</th>
+                                                    <th>Soft Copy Available Online?</th>
+                                                    <th>Paper Remarks</th>
+                                                    <th>Inspected By:</th>
+                                                    <th>Update/Add Options</th>
+                                                    <th>Delete Option</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody id="tbody1">
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div> 
+                                <!-- Modal Starts-->
+                                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Control Panel</h5>
+                                                <button type="button" id="close-modal-btn" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <label>PR #</label> 
+                                                <input id="pr_num" type="number" disabled>
+                                    
+                                                <label>Resolution #</label> 
+                                                <input id="resolution_num" type="number" disabled>
+                                    
+                                                <label for="resolution">Resolution Remark</label>
+                                                <select id="resolution" name="resolution" disabled>
+                                                    <option value="None">None</option>
+                                                    <option value="Done">Done</option>
+                                                    <option value="Not Done">Not Done</option>
+                                                </select> 
+                                    
+                                                <label for="abstract">Abstract Remark</label>
+                                                <select id="abstract" name="abstract" disabled>
+                                                    <option value="None">None</option>
+                                                    <option value="Done">Done</option>
+                                                    <option value="Not Done">Not Done</option>
+                                                </select> 
+                                    
+                                                <label>Type of Bid Opening</label> 
+                                                <select id="bidding_type" name="bidding_type" disabled>
+                                                    <option value="None">None</option>
+                                                    <option value="Referendum">Referendum</option>
+                                                    <option value="Face-Face Bid Opening">Face-Face Bid Opening</option>
+                                                </select> 
+                                    
+                                                <label>Bid-Opening Date</label> 
+                                                <input id="bidding_date" type="date" disabled>
+                                    
+                                                <label for="baltonado">NSTP Coordinator</label>
+                                                <select id="baltonado" name="baltonado" >
+                                                    <option value="None">None</option>
+                                                    <option value="Signed">Signed</option>
+                                                    <option value="Not Signed">Not Signed</option>
+                                                </select> 
+                                    
+                                                <label for="sodomia">Cultural and Arts Coordinator</label>
+                                                <select id="sodomia" name="sodomia" >
+                                                    <option value="None">None</option>
+                                                    <option value="Signed">Signed</option>
+                                                    <option value="Not Signed">Not Signed</option>
+                                                </select> 
+                                    
+                                                <label for="mabitad">Head, HRMO</label>
+                                                <select id="mabitad" name="mabitad" >
+                                                    <option value="None">None</option>
+                                                    <option value="Signed">Signed</option>
+                                                    <option value="Not Signed">Not Signed</option>
+                                                </select> 
+                                    
+                                                <label for="bahian">Head, Research and Development</label>
+                                                <select id="bahian" name="bahian" >
+                                                    <option value="None">None</option>
+                                                    <option value="Signed">Signed</option>
+                                                    <option value="Not Signed">Not Signed</option>
+                                                </select> 
+                                    
+                                                <label for="badilla">Head, Administrative and Finance Services</label>
+                                                <select id="badilla" name="badilla" >
+                                                    <option value="None">None</option>
+                                                    <option value="Signed">Signed</option>
+                                                    <option value="Not Signed">Not Signed</option>
+                                                </select> 
+                                    
+                                                <label for="cadiz">Campus Director</label>
+                                                <select id="cadiz" name="cadiz" >
+                                                    <option value="None">None</option>
+                                                    <option value="Signed">Signed</option>
+                                                    <option value="Not Signed">Not Signed</option>
+                                                </select> 
+                                    
+                                                <label>Canvass Date</label> 
+                                                <input id="canvass_date" type="date" disabled>
+                                    
+                                                <label>Supplier Company/Establishment</label>
+                                                <input id="supplier" type="text">
+                                                
+                                                <label>Date Updated/Submitted</label> 
+                                                <input id="updated" type="date"> 
+                                    
+                                                <label>End User Office</label> 
+                                                <input id="end_user" type="text" disabled>
+                                    
+                                                <label>Requester's Name</label> 
+                                                <input id="requester" type="text" disabled> 
+                                                
+                                                <label for="remarks">RFQ-Remarks</label>
+                                                <select id="remarks" name="remarks" disabled>
+                                                    <option value="None">None</option>
+                                                    <option value="Done">Done</option>
+                                                    <option value="Not Done">Not Done</option>
+                                                </select> 
+                                                
+                                                <label>RFQ-Date Processed (If Done)</label> 
+                                                <input id="rfq_date" type="date" disabled>
+                                    
+                                                <label for="amount">Less 50k?</label> 
+                                                <select id="amount" name="amount" disabled>
+                                                    <option value="None">None</option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </select>
+                                    
+                                                <label>Philgeps Posting Date (If Above 50k)</label> 
+                                                <input id="philgeps" type="date" disabled> 
+                                    
+                                                <label>Lacking Documents</label> 
+                                                <input id="lacking" type="text">
+                                    
+                                                <label>Date Received</label> 
+                                                <input id="received_date" type="date" disabled> 
+                                    
+                                                <label for="soft-copy">Soft Copy Available Online?</label> 
+                                                <select id="soft_copy" name="soft_copy">
+                                                    <option value="None">None</option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </select>
+
+                                                <label>Paper Remark</label> 
+                                                <input id="paper_remarks" type="text"> 
+                                    
+                                                <label for="position">Inspected By:</label> 
+                                                <select id="position" name="position" >
+                                                    <option value="None">None</option>
+                                                    <option value="BAC-Staff">BAC-Staff</option>
+                                                    <option value="Canvasser">Canvasser</option>          
+                                                </select> 
+                                    
+                                            </div>
+                                            <div class="form-container">
+                                                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+                                                <button id="update-btn">
+                                                       <span>UPDATE</span> 
+                                                </button>
+                                                
+                                                <button id="add-btn">
+                                                    <span>BID SUCCESSFUL</span> 
+                                                </button>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal ends-->   
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; BAC OFFICE 2023</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="../js/scripts.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+        <script src="../js/datatables-simple-demo.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        
+        <script src="../js/webpage_checker.js"></script>
+        <script src="../js_login_auth/bidding_officer.SI.js"></script>
+
+    </body>
+
+    <script type="module" id="MainScript">
+
+let SignOut = document.getElementById("logout");
+    
+    SignOut.addEventListener("click", async function() { 
+            
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to log out from this account?!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-check"></i> Yes!',
+            cancelButtonText: 'No',
+            confirmButtonHtml: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+               // auth.signOut()
+                // logout logic here
+                // Clear session storage when logging out or when the user is logged out
+            sessionStorage.removeItem("email");
+            window.location.assign('../login_pages/biddingofficer.html')
+                Swal.fire('Success!', 'Logged Out Successfully.', 'success');
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                //Swal.fire('Cancelled', 'Your file is safe :)', 'error');
+            }
+        });
+    });
+
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js'
+        import { getFirestore, doc, setDoc, getDoc, getDocs, onSnapshot, collection, addDoc, updateDoc, deleteDoc, deleteField} from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js'
+       
+                    // Your web app's Firebase configuration
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyDnQUrAr5PTdS1chHdHr1u91CrHiFSs5DM",
+                        authDomain: "bac-office-files.firebaseapp.com",
+                        projectId: "bac-office-files",
+                        storageBucket: "bac-office-files.appspot.com",
+                        messagingSenderId: "792811800505",
+                        appId: "1:792811800505:web:d7297ca6af34406b55d868",
+                        measurementId: "G-EGNTTZ71G3"
+                   };
+       
+                   const app = initializeApp(firebaseConfig);
+                   
+                   const db = getFirestore();
+
+             let PR_NUM = document.getElementById("pr_num");
+             let RESOLUTION_NUM = document.getElementById("resolution_num");
+             let RESOLUTION = document.getElementById("resolution");
+             let ABSTRACT = document.getElementById("abstract");
+             
+             let BALTONADO = document.getElementById("baltonado");
+             let SODOMIA = document.getElementById("sodomia");
+             let MABITAD = document.getElementById("mabitad");
+             let BAHIAN = document.getElementById("bahian");
+             let BADILLA = document.getElementById("badilla");
+             let CADIZ = document.getElementById("cadiz");
+             let BIDDING_TYPE = document.getElementById("bidding_type");
+             let BIDDING_DATE = document.getElementById("bidding_date");
+
+             let CANVASS_DATE = document.getElementById("canvass_date");
+             let SUPPLIER = document.getElementById("supplier");
+             let DATE_UPDATED = document.getElementById("updated");
+             let USER = document.getElementById("end_user");
+             let REQUESTER = document.getElementById("requester");
+             let REMARKS = document.getElementById("remarks");
+             let RFQ_DATE = document.getElementById("rfq_date");
+             let AMOUNT = document.getElementById("amount");
+             let PHILGEPS = document.getElementById("philgeps");
+             let LACKING = document.getElementById("lacking");
+             let RECEIVED_DATE = document.getElementById("received_date");
+             let COPY = document.getElementById("soft_copy");
+             let PAPER_REMARKS = document.getElementById("paper_remarks");
+             let INSPECTOR = document.getElementById("position");
+       
+             let UPDATE = document.getElementById("update-btn");
+             let ADD = document.getElementById("add-btn");
+             const modal = document.getElementById('exampleModalCenter');   
+                   
+            //-------------ADDING DOCUMENT TO SUCCESSFUL BIDDINGS AND UNSUCCESSFUL PR----------//
+
+        ADD.addEventListener("click", async function() {
+            Swal.fire({
+                        title: 'Do you want to add this file?',
+                        text: "This file will be added to the Complete and For Canvassing PR #'s",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="fas fa-plus"></i> Yes, Add it!',
+                        cancelButtonText: 'Cancel',
+                        confirmButtonHtml: true
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                        // Add logic here
+            try {
+                
+                if (
+                RESOLUTION_NUM.value === '' ||
+                RESOLUTION.value === 'None' ||
+                ABSTRACT.value === 'None' ||
+                BIDDING_TYPE.value === 'None' ||
+                BIDDING_DATE.value === '' ||
+                BALTONADO.value === '' ||
+                BALTONADO.value === 'None' ||
+                BALTONADO.value === 'Not Signed' ||
+                SODOMIA.value === '' ||
+                SODOMIA.value === 'None' ||
+                SODOMIA.value === 'Not Signed' ||
+                MABITAD.value === '' ||
+                MABITAD.value === 'None' ||
+                MABITAD.value === 'Not Signed' ||
+                BAHIAN.value === '' ||
+                BAHIAN.value === 'None' ||
+                BAHIAN.value === 'Not Signed' ||
+                BADILLA.value === '' ||
+                BADILLA.value === 'None' ||
+                BADILLA.value === 'Not Signed' ||
+                CADIZ.value === '' ||
+                CADIZ.value === 'None' ||
+                CADIZ.value === 'Not Signed' ||
+                SUPPLIER.value === '' ||
+                DATE_UPDATED.value === '' ||
+                LACKING.value === '' ||
+                COPY.value === 'None' ||
+                PAPER_REMARKS.value === '' ||
+                PAPER_REMARKS.value === 'undefined' ||
+                INSPECTOR.value === 'None' ||
+                INSPECTOR.value === 'undefined' ||
+                INSPECTOR.value === '' ||
+                INSPECTOR.value === 'Canvasser' 
+                ) {
+                    Swal.fire('Error!', "Please fill in all fields.", 'warning');
+                return false;
+                }
+
+                const ref = doc(db, 'Successful-Biddings', PR_NUM.value);
+
+                const docSnap = await getDoc(ref);
+                if (docSnap.exists()) {
+                    Swal.fire('Error!', 'Document with the same PR # already exists', 'warning');
+                    return;
+                }
+
+                const refe = doc(db, 'Successful-Biddings', RESOLUTION_NUM.value);
+
+                const docSnapss = await getDoc(refe);
+                if (docSnapss.exists()) {
+                    Swal.fire('Error!', 'Document with the same Resolution # already exists', 'warning');
+                    return;
+                }
+
+                const refer = doc(db, "Unsuccessful-PR'#s", PR_NUM.value);
+
+                const refers = doc(db, "Unsuccessful-PR'#s", RESOLUTION_NUM.value);
+
+                const docSnaps = await getDoc(refers);
+                if (docSnaps.exists()) {
+                    Swal.fire('Error!', 'Document with the same Resolution # already exists', 'warning');
+                    return;
+                }
+
+                var reference = doc(db, 'Bidding_Schedules', PR_NUM.value);
+                await deleteDoc(reference)
+                        .then(()=>{
+                        })
+                        .catch((error)=>{
+                           Swal.fire('Error!', "Delete Failed, error: "+ error, 'error');
+                    });
+
+                await setDoc(ref, {
+                    Pr_num: PR_NUM.value,
+                    Resolution_num: RESOLUTION_NUM.value,
+                    Resolution: RESOLUTION.value,
+                    Abstract: ABSTRACT.value,
+                    Baltonado: BALTONADO.value,
+                    Sodomia: SODOMIA.value,
+                    Mabitad: MABITAD.value,
+                    Bahian: BAHIAN.value,
+                    Badilla: BADILLA.value,
+                    Cadiz: CADIZ.value,
+                    Bidding_Type: BIDDING_TYPE.value,
+                    Bidding_Date: BIDDING_DATE.value,
+                    Canvass_Date: CANVASS_DATE.value,
+                    Supplier_Company: SUPPLIER.value,
+                    Date_Updated: DATE_UPDATED.value,
+                    End_user: USER.value,
+                    Requester: REQUESTER.value,
+                    Remarks: REMARKS.value,
+                    Rfq_Date_Processed: RFQ_DATE.value,
+                    Amount: AMOUNT.value,
+                    Philgeps: PHILGEPS.value,
+                    Lacking: LACKING.value,
+                    Date_Received: RECEIVED_DATE.value,
+                    Copy: COPY.value,
+                    Paper_Remarks: PAPER_REMARKS.value,
+                    Inspector : INSPECTOR.value
+                    });
+                
+                await setDoc(refer, {
+                    Pr_num: PR_NUM.value,
+                    Resolution_num: RESOLUTION_NUM.value,
+                    Resolution: RESOLUTION.value,
+                    Abstract: ABSTRACT.value,
+                    Baltonado: BALTONADO.value,
+                    Sodomia: SODOMIA.value,
+                    Mabitad: MABITAD.value,
+                    Bahian: BAHIAN.value,
+                    Badilla: BADILLA.value,
+                    Cadiz: CADIZ.value,
+                    Bidding_Type: BIDDING_TYPE.value,
+                    Bidding_Date: BIDDING_DATE.value,
+                    Canvass_Date: CANVASS_DATE.value,
+                    Supplier_Company: SUPPLIER.value,
+                    Date_Updated: DATE_UPDATED.value,
+                    End_user: USER.value,
+                    Requester: REQUESTER.value,
+                    Remarks: REMARKS.value,
+                    Rfq_Date_Processed: RFQ_DATE.value,
+                    Amount: AMOUNT.value,
+                    Philgeps: PHILGEPS.value,
+                    Lacking: LACKING.value,
+                    Date_Received: RECEIVED_DATE.value,
+                    Copy: COPY.value,
+                    Paper_Remarks: PAPER_REMARKS.value,
+                    Inspector : INSPECTOR.value
+                    });
+                    Swal.fire('Added!', 'File Added Successfully.', 'success');
+                $(modal).modal('hide');
+                return;
+            } 
+            catch (error) {
+                console.error('Error adding document:', error);
+                Swal.fire('Adding failed an Error Occured', 'error');
+            }
+            //Swal.fire('Added!', 'File Added Successfully.', 'success');
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        Swal.fire('Cancelled');
+                        }
+            });
+        });
+
+        //----------UPDATING DOCUMENT------------//
+        UPDATE.addEventListener("click", async function() {
+                        try {
+
+                            const ref = doc(db, "Bidding_Schedules", PR_NUM.value);
+                
+                            await updateDoc(ref, {
+                                Pr_num: PR_NUM.value,
+                                Resolution_num: RESOLUTION_NUM.value,
+                                Resolution: RESOLUTION.value,
+                                Abstract: ABSTRACT.value,
+                                Baltonado: BALTONADO.value,
+                                Sodomia: SODOMIA.value,
+                                Mabitad: MABITAD.value,
+                                Bahian: BAHIAN.value,
+                                Badilla: BADILLA.value,
+                                Cadiz: CADIZ.value,
+                                Bidding_Type: BIDDING_TYPE.value,
+                                Bidding_Date: BIDDING_DATE.value,
+                                Canvass_Date: CANVASS_DATE.value,
+                                Supplier_Company: SUPPLIER.value,
+                                Date_Updated: DATE_UPDATED.value,
+                                User: USER.value,
+                                Requester: REQUESTER.value,
+                                Remarks: REMARKS.value,
+                                Rfq_Date_Processed: RFQ_DATE.value,
+                                Amount: AMOUNT.value,
+                                Philgeps: PHILGEPS.value,
+                                Lacking: LACKING.value,
+                                Date_Received: RECEIVED_DATE.value,
+                                Copy: COPY.value,
+                                Paper_Remarks: PAPER_REMARKS.value,
+                                Inspector : INSPECTOR.value
+                            });
+
+                            Swal.fire('Updated!', 'Data Updated successfully', 'success');
+                            //$(modal).modal('hide');
+                            return;
+                        } 
+                        catch (error) {
+                            console.error('Error adding document:', error);
+                            Swal.fire('Update failed.', 'error');
+                            return;
+                        }
+                });
+
+       //---------FILLING THE TABLE---------------//
+       
+                   var tbody = document.getElementById('tbody1');
+                   var trow = document.getElementById('tr')
+                   function AddItemToTable(prnum, resolutionnum, resolution, abstract, baltonado, sodomia,
+                                           mabitad, bahian, badilla, cadiz, biddingtype, biddingdate, 
+                                           canvass_date, supplier, datesubmitted, user, requester, remark, rfqdate,
+                                           amountt, philgepss, lackingg, date_received, copy, paperremarks, inspector){
+                       var tbody = document.getElementById("tbody1");
+                       let trow = document.createElement("tr");
+                       let td0 = document.createElement("td");
+                       let td1 = document.createElement("td");
+                       let td2 = document.createElement("td");
+                       let td3 = document.createElement("td");
+                       let td4 = document.createElement("td");
+                       let td5 = document.createElement("td");
+                       let td6 = document.createElement("td");
+                       let td7 = document.createElement("td");
+                       let td8 = document.createElement("td");
+                       let td9 = document.createElement("td");
+                       let td10 = document.createElement("td");
+                       let td11 = document.createElement("td");
+                       let td12 = document.createElement("td");
+                       let td13 = document.createElement("td");
+                       let td14 = document.createElement("td");
+                       let td15 = document.createElement("td");
+                       let td16 = document.createElement("td");
+                       let td17 = document.createElement("td");
+                       let td18 = document.createElement("td");
+                       let td19 = document.createElement("td");
+                       let td20 = document.createElement("td");
+                       let td21 = document.createElement("td");
+                       let td22 = document.createElement("td");
+                       let td23 = document.createElement("td");
+                       let td24 = document.createElement("td");
+                       let td25 = document.createElement("td");
+                       let td26 = document.createElement("td");
+                       let td27 = document.createElement("td"); 
+
+                       td0.innerHTML = prnum;
+                       td1.innerHTML = resolutionnum;
+                       td2.innerHTML = resolution;
+                       td3.innerHTML = abstract;
+                       td4.innerHTML = baltonado;
+                       td5.innerHTML = sodomia;
+                       td6.innerHTML = mabitad;
+                       td7.innerHTML = bahian;
+                       td8.innerHTML = badilla;
+                       td9.innerHTML = cadiz;
+                       td10.innerHTML = biddingtype;
+                       td11.innerHTML = biddingdate;
+                       td12.innerHTML = canvass_date;
+                       td13.innerHTML = supplier;
+                       td14.innerHTML = datesubmitted;
+                       td15.innerHTML = user;
+                       td16.innerHTML = requester;
+                       td17.innerHTML = remark;
+                       td18.innerHTML = rfqdate;
+                       td19.innerHTML = amountt;
+                       td20.innerHTML = philgepss;
+                       td21.innerHTML = lackingg;
+                       td22.innerHTML = date_received;
+                       td23.innerHTML = copy;
+                       td24.innerHTML = paperremarks;
+                       td25.innerHTML = inspector;
+
+                       var Updatebtn = document.createElement("button");
+                       Updatebtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+
+                       var Deletebtn = document.createElement("button");
+                       Deletebtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                       Deletebtn.classList.add("btn-delete"); // add CSS class to the button
+                       const modal = document.getElementById('exampleModalCenter');
+
+                       Updatebtn.addEventListener("click", function() {
+                        // Get the values of all the cells in the table row that the update button belongs to
+                        var prnum = this.closest("tr").querySelectorAll("td")[0].textContent;
+                        var resolutionnum = this.closest("tr").querySelectorAll("td")[1].textContent;
+                        var resolution = this.closest("tr").querySelectorAll("td")[2].textContent;
+                        var abstract = this.closest("tr").querySelectorAll("td")[3].textContent;
+                        var baltonado = this.closest("tr").querySelectorAll("td")[4].textContent;
+                        var sodomia = this.closest("tr").querySelectorAll("td")[5].textContent;
+                        var mabitad = this.closest("tr").querySelectorAll("td")[6].textContent;
+                        var bahian = this.closest("tr").querySelectorAll("td")[7].textContent;
+                        var badilla = this.closest("tr").querySelectorAll("td")[8].textContent;
+                        var cadiz = this.closest("tr").querySelectorAll("td")[9].textContent;
+                        var biddingtype = this.closest("tr").querySelectorAll("td")[10].textContent;
+                        var biddingdate = this.closest("tr").querySelectorAll("td")[11].textContent;
+                        var canvass_date = this.closest("tr").querySelectorAll("td")[12].textContent;
+                        var supplier = this.closest("tr").querySelectorAll("td")[13].textContent;
+                        var datesubmitted = this.closest("tr").querySelectorAll("td")[14].textContent;
+                        var user = this.closest("tr").querySelectorAll("td")[15].textContent;
+                        var requester = this.closest("tr").querySelectorAll("td")[16].textContent;
+                        var remark = this.closest("tr").querySelectorAll("td")[17].textContent;
+                        var rfqdate = this.closest("tr").querySelectorAll("td")[18].textContent;
+                        var amountt = this.closest("tr").querySelectorAll("td")[19].textContent;
+                        var philgepss = this.closest("tr").querySelectorAll("td")[20].textContent;
+                        var lackingg = this.closest("tr").querySelectorAll("td")[21].textContent;
+                        var date_received = this.closest("tr").querySelectorAll("td")[22].textContent;
+                        var copy = this.closest("tr").querySelectorAll("td")[23].textContent;
+                        var paperremarks = this.closest("tr").querySelectorAll("td")[24].textContent;
+                        var inspector = this.closest("tr").querySelectorAll("td")[25].textContent;
+                        
+                        // Set the input values in the modal pop-up to the values obtained above
+                        document.getElementById("pr_num").value = prnum;
+                        document.getElementById("resolution_num").value = resolutionnum;
+                        document.getElementById("resolution").value = resolution;
+                        document.getElementById("abstract").value = abstract;
+                        document.getElementById("baltonado").value = baltonado;
+                        document.getElementById("sodomia").value = sodomia;
+                        document.getElementById("mabitad").value = mabitad;
+                        document.getElementById("bahian").value = bahian;
+                        document.getElementById("badilla").value = badilla;
+                        document.getElementById("cadiz").value = cadiz;
+                        document.getElementById("bidding_type").value = biddingtype;
+                        document.getElementById("bidding_date").value = biddingdate;
+                        document.getElementById("canvass_date").value = canvass_date;
+                        document.getElementById("supplier").value = supplier;
+                        document.getElementById("updated").value = datesubmitted;
+                        document.getElementById("end_user").value = user;
+                        document.getElementById("requester").value = requester;
+                        document.getElementById("remarks").value = remark;
+                        document.getElementById("rfq_date").value = rfqdate;
+                        document.getElementById("amount").value = amountt;
+                        document.getElementById("philgeps").value = philgepss;
+                        document.getElementById("lacking").value = lackingg;
+                        document.getElementById("received_date").value = date_received;
+                        document.getElementById("soft_copy").value = copy;
+                        document.getElementById("paper_remarks").value = paperremarks;
+                        document.getElementById("position").value = inspector;
+                        
+                        //Show the modal pop-up//
+                        $('#exampleModalCenter').modal('show');
+
+                       });
+                       
+                       // Add event listener for Delete button
+                    Deletebtn.addEventListener("click", function() {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: 'You will not be able to recover this file!',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: '<i class="fas fa-trash-alt"></i> Yes, delete it!',
+                            cancelButtonText: 'Cancel',
+                            confirmButtonHtml: true
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                        // Delete logic here
+                        // Get the PR number of the row to be deleted
+                        var prnumber = this.closest("tr").querySelectorAll("td")[0].textContent;
+                        
+                        // Delete the row from the table
+                        var table = document.getElementById("table-1");
+                        var rows = table.rows;
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            var row_prnumber = row.cells[0].textContent;
+                            if (row_prnumber === prnumber) {
+                            table.deleteRow(i);
+                            break;
+                            }
+                        }
+                        // Delete the data from the database
+                        const docRef = doc(db, "Bidding_Schedules", prnumber);
+                        deleteDoc(docRef).then(() => {
+                            Swal.fire('Deleted!', "File Deleted Successfully!", 'success');
+                        }).catch((error) => {
+                            Swal.fire("Error removing document: ", 'error', error);
+                        });
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            Swal.fire('Cancelled!', 'Your file is safe', 'error');
+                            }
+                        });
+                    });
+
+                       // Add event listener to the close button
+                        const close = document.getElementById('close-modal-btn')
+                        
+                        close.addEventListener('click', function() {
+                            // Trigger the close action on the modal
+                            $(modal).modal('hide');
+                        });
+                       
+                       trow.appendChild(td0);
+                       trow.appendChild(td1);
+                       trow.appendChild(td2);
+                       trow.appendChild(td3);
+                       trow.appendChild(td4);
+                       trow.appendChild(td5);
+                       trow.appendChild(td6);
+                       trow.appendChild(td7);
+                       trow.appendChild(td8);
+                       trow.appendChild(td9);
+                       trow.appendChild(td10);
+                       trow.appendChild(td11);
+                       trow.appendChild(td12);
+                       trow.appendChild(td13);
+                       trow.appendChild(td14);
+                       trow.appendChild(td15);
+                       trow.appendChild(td16);
+                       trow.appendChild(td17);
+                       trow.appendChild(td18);
+                       trow.appendChild(td19);
+                       trow.appendChild(td20);
+                       trow.appendChild(td21);
+                       trow.appendChild(td22);
+                       trow.appendChild(td23);
+                       trow.appendChild(td24);
+                       trow.appendChild(td25);
+
+                       td26.appendChild(Updatebtn);
+
+                       td27.appendChild(Deletebtn);
+
+                       trow.appendChild(td26);
+                       trow.appendChild(td27);
+       
+                       tbody.appendChild(trow);
+                   }
+       
+                   function AddAllItemsToTable(Forbidding){
+                       
+                       tbody.innerHTML = "";
+                       Forbidding.forEach(Element => {
+                           AddItemToTable(Element.Pr_num, Element.Resolution_num, Element.Resolution, Element.Abstract,
+                           Element.Baltonado, Element.Sodomia, Element.Mabitad, Element.Bahian, Element.Badilla, Element.Cadiz, 
+                           Element.Bidding_Type, Element.Bidding_Date, Element.Canvass_Date, Element.Supplier_Company, Element.Date_Updated, 
+                           Element.End_user, Element.Requester, Element.Remarks, Element.Rfq_Date_Processed, Element.Amount, 
+                           Element.Philgeps, Element.Lacking, Element.Date_Received, Element.Copy, Element.Paper_Remarks, Element.Inspector);
+                       });
+                   }
+       
+       //-----------GET ALL DATA-------------//
+                  // async function GetAllDataOnce(){
+                    //   const querySnapShot = await getDocs(collection(db, "Merchant"));
+       
+                      // var merchants = [];
+       
+                     //  querySnapShot.forEach(doc => {
+                       //    merchants.push(doc.data());
+                      // });
+                      // AddAllItemsToTable(merchants);
+                  // }
+                  // window.onload = GetAllDataOnce;
+       
+                   async function GetAllDataRealtime(){
+                      const dbRef = collection(db, "Bidding_Schedules");
+       
+                       onSnapshot(dbRef, (querySnapShot) => {
+                          var forbiddingpr = [];
+                          
+                          querySnapShot.forEach(doc => {
+                            forbiddingpr.push(doc.data());
+                               
+                          });
+                          AddAllItemsToTable(forbiddingpr);
+                       })
+                   }
+       
+                   window.onload = GetAllDataRealtime;
+       
+                   //-------SEARCH BOX FUNCTIONS---------//
+       
+                   var searchbox_1 = document.getElementById("searchbox-1");
+       
+                   searchbox_1.addEventListener('keyup', function(){
+                       var keyword = this.value;
+                       keyword = keyword.toUpperCase();
+                       var table_1 = document.getElementById('table-1');
+                       var all_tr = table_1.getElementsByTagName('tr');
+       
+                       for(var i=0; i<all_tr.length; i++){
+                           var all_columns = all_tr[i].getElementsByTagName('td');
+       
+                           for (var j=0; j<all_columns.length; j++){
+                              
+                               if(all_columns[j]){
+                                   var column_value = all_columns[j].innerText || all_columns[j].textContent;
+                                   column_value = column_value.toUpperCase();
+       
+                                   if(column_value.indexOf(keyword) > -1 ){
+                                       all_tr[i].style.display = '';
+                                       break;
+                                   }else{
+                                       all_tr[i].style.display = 'none';
+                                   }
+                           }
+                         }
+                       }
+                   })
+       
+               
+       //--------------REFERENCES---------------//
+       
+                 //  let NameBox = document.getElementById("Namebox");
+                 //  let RollBox = document.getElementById("Rollbox");
+                 //  let SecBox = document.getElementById("Secbox");
+                // let GenBox = document.getElementById("Genbox");
+       
+                 //  let insBtn = document.getElementById("Insbtn");
+                  // let selBtn = document.getElementById("Selbtn");
+                  // let updBtn = document.getElementById("Updbtn");
+                  // let delBtn = document.getElementById("Delbtn");
+       
+       //-------------ADDING DOCUMENT----------//
+       
+                  // async function AddDocument_CustomID(){
+                    //   var ref = doc(db,"TheStudentsList", RollBox.value);
+       
+                    //   await setDoc(
+                      //     ref, {
+                        //       NameOfStd: NameBox.value,
+                          //     RollNo: RollBox.value,
+                            //   Section: SecBox.value,
+                              // Gender: GenBox.value
+                          // }
+                      // )
+                      // .then(()=>{
+                        //   alert("Data Added Successfully");
+                      // })
+                      // .catch((error)=>{
+                        //   alert("Adding Failed, error:"+ error);
+                      // });
+                  // }
+       
+       //----------GETTING DOCUMENT------------//
+       
+                  // async function GetADocument(){
+                    //   var ref = doc(db, "TheStudentsList", RollBox.value);
+                     //  const docSnap = await getDoc(ref);
+       
+                      // if(docSnap.exists()){
+                        //   NameBox.value = docSnap.data().NameOfStd;
+                         //  SecBox.value = docSnap.data().Section;
+                         //  GenBox.value = docSnap.data().Gender;
+                      // }
+       
+                      // else{
+                        //   alert("No Such Document");
+                      // }
+                  // }
+       
+       //----------UPDATING DOCUMENT------------//
+       
+                  // async function UpdateFieldsInADocument(){
+                      // var ref = doc(db,"TheStudentsList", RollBox.value);
+       
+                      //await updateDoc(
+                        //   ref, {
+                          //    NameOfStd: NameBox.value,
+                           //    Section: SecBox.value,
+                       //        Gender: GenBox.value
+                         //  }
+                    //   )
+                      // .then(()=>{
+                     //      alert("Data Updated Successfully");
+                     //  })
+                     //  .catch((error)=>{
+                     //      alert("Update Failed, error:"+ error);
+                       //});
+                  // }
+       
+       //----------UPDATING DOCUMENT------------//
+       
+                  // async function DeleteDocument(){
+                      // var ref = doc(db, "TheStudentsList", RollBox.value);
+                      // const docSnap = await getDoc(ref);
+       
+                      // if(!docSnap.exists()){
+                       //    alert("Document does not exist");
+                      //     return;
+                     //  }
+       
+                     //  await deleteDoc(ref)
+                       //   .then(()=>{
+                       //    alert("Data Deleted Successfully");
+                     //  })
+                     //  .catch((error)=>{
+                       //    alert("Update Failed, error:"+ error);
+                      // });
+                  // }
+       
+       //---------Assign Events To Btns--------//
+       
+                   //---declaration para sa add document---//
+                  // insBtn.addEventListener("click", AddDocument_CustomID);
+                   //---declaration para sa get document---//
+                  // selBtn.addEventListener("click", GetADocument);
+                   //---declaration para sa update document---//
+                  // updBtn.addEventListener("click", UpdateFieldsInADocument);
+                   //---declaration para sa update document---//
+                  // delBtn.addEventListener("click", DeleteDocument);
+                 
+             
+                 </script>     
+                 
+</html>

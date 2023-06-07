@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <meta charset="UTF-8">
+    <link rel="icon" href="../img/evsu_title_logo.png" type="image/x-icon" />
+    <title>All For Canvassing Pr</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="../css/styles.css" rel="stylesheet" /> 
+    <link rel="stylesheet" href="../css/add-update.css" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+    <style>
+        .labs{
+            display: inline-block;
+            width: 100px;
+        }
+
+    </style>
+
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script>
+
+   </head>
+
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" onclick="End_User_Dashboard(event)">End-User</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#!">Settings</a></li>
+                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="#!" id="logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" onclick="End_User_All_Successful_PR(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                            
+                            <div class="sb-sidenav-menu-heading">Pre-Bidding Interface</div>
+
+                            <a class="nav-link" onclick="End_User_All_Incomplete_Pr(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL INCOMPLETE PR#
+                            </a>
+
+                            <a class="nav-link" onclick="End_User_All_Complete_Pr(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL COMPLETE PR#
+                            </a>
+
+                            <div class="sb-sidenav-menu-heading">Canvassing Interface</div>
+
+                            <a class="nav-link" onclick="End_User_All_For_Canvassing(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL FOR CANVASSING PR#
+                            </a>
+
+                            <a class="nav-link" onclick="End_User_All_Canvassed(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL CANVASSED PR#
+                            </a>
+
+                            <div class="sb-sidenav-menu-heading">Bidding Interface</div>
+
+                            <a class="nav-link" onclick="End_User_All_For_Bidding(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL FOR BIDDING PR#
+                            </a>
+
+                            <a class="nav-link" onclick="End_User_All_Bidding_Schedule(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL BIDDING SCHEDULES OF PR#
+                            </a>
+
+                            <a class="nav-link" onclick="End_User_All_Bidding_Successful(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL BID PR#
+                            </a>
+
+                            <div class="sb-sidenav-menu-heading">Post-Bidding Interface</div>
+
+                            <a class="nav-link" onclick="End_User_All_Unsuccessful_PR(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                ALL UNSUCCESSFUL PR#
+                            </a>
+
+                            <a class="nav-link" onclick="End_User_All_Successful_PR(event)">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                               ALL SUCCESSFUL PR#
+                            </a>
+
+
+                            </div>
+                            <!--<div class="sb-sidenav-menu-heading">Addons</div>
+                            <a class="nav-link" href="dashboard.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Tables
+                            </a>
+                        -->
+                        </div>
+                    
+                    <div class="sb-sidenav-footer">
+                        <div class="small" id="user">Logged in as:</div>
+                        End-User
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                <div class="container-fluid px-4">
+                        <br><br>
+                        <h1 class="mt-4">All For Canvassing PR</h1>
+
+                    <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                All For Canvassing Purchase Requests 
+                            </div>
+                            
+                            <div class="card-body">
+                                <input type="text" id="searchbox-1" placeholder="Search Data Here">
+                                <div class="table-responsive"> <!--Added rani naku I dunno the purpose yet-->
+                                    <table class="table table-primary text-black table-bordered" id='table-1'>
+                                        <thead>
+                                            <br>
+                                            <tr>
+                                                <th>PR #</th>
+                                                <th>Date of Canvass</th>
+                                                <th>Supplier Company/Establishment</th> 
+                                                <th>Date Updated</th>
+                                                <th>End User Office</th>
+                                                <th>Requester's Name</th>
+                                                <th>RFQ-Remarks</th>
+                                                <th>RFQ-Date Processed</th>
+                                                <th>Less 50k?</th>
+                                                <th>Philgeps Posting Date (If Above 50k)</th>
+                                                <th>Lacking Documents</th>
+                                                <th>Date Received</th>
+                                                <th>Soft Copy Available Online?</th>
+                                                <th>Paper Remarks</th>
+                                                <th>Inspected By:</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody id="tbody1">
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                    </div>
+                </div>
+            </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; BAC OFFICE 2023</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="../js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="../js/datatables-simple-demo.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <script src="../js/webpage_checker.js"></script>
+    <script src="../js_login_auth/end_user.SI.js"></script>
+
+</body>
+
+<script type="module" id="MainScript">
+
+let SignOut = document.getElementById("logout");
+    
+    SignOut.addEventListener("click", async function() { 
+            
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to log out from this account?!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-check"></i> Yes!',
+            cancelButtonText: 'No',
+            confirmButtonHtml: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+               // auth.signOut()
+                // logout logic here
+                // Clear session storage when logging out or when the user is logged out
+            sessionStorage.removeItem("email");
+            window.location.assign('../login_pages/enduser.html')
+                Swal.fire('Success!', 'Logged Out Successfully.', 'success');
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                //Swal.fire('Cancelled', 'Your file is safe :)', 'error');
+            }
+        });
+    });
+
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js'
+       import { getFirestore, doc, setDoc, getDoc, getDocs, onSnapshot, collection, addDoc, updateDoc, deleteDoc, deleteField} from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js'
+   
+                // Your web app's Firebase configuration
+                const firebaseConfig = {
+                    apiKey: "AIzaSyDnQUrAr5PTdS1chHdHr1u91CrHiFSs5DM",
+                    authDomain: "bac-office-files.firebaseapp.com",
+                    projectId: "bac-office-files",
+                    storageBucket: "bac-office-files.appspot.com",
+                    messagingSenderId: "792811800505",
+                    appId: "1:792811800505:web:d7297ca6af34406b55d868",
+                    measurementId: "G-EGNTTZ71G3"
+               };
+   
+               const app = initializeApp(firebaseConfig);
+               
+               const db = getFirestore();
+       
+//---------FILLING THE TABLE---------------//
+       
+var tbody = document.getElementById('tbody1');
+                   var trow = document.getElementById('tr')
+                   function AddItemToTable(prnum, canvass_date, supplier, date_updated, user, 
+                   requester, remarks, rfq_date, amount, philgeps, lacking, date_received, copy, paperremarks, inspector){
+                       var tbody = document.getElementById("tbody1");
+                       let trow = document.createElement("tr");
+                       let td0 = document.createElement("td");
+                       let td1 = document.createElement("td");
+                       let td2 = document.createElement("td");
+                       let td3 = document.createElement("td");
+                       let td4 = document.createElement("td");
+                       let td5 = document.createElement("td");
+                       let td6 = document.createElement("td");
+                       let td7 = document.createElement("td");
+                       let td8 = document.createElement("td");
+                       let td9 = document.createElement("td");
+                       let td10 = document.createElement("td");
+                       let td11 = document.createElement("td");
+                       let td12 = document.createElement("td");
+                       let td13 = document.createElement("td");
+                       let td14 = document.createElement("td");
+                     //  let td15 = document.createElement("td");
+       
+                       td0.innerHTML = prnum;
+                       td1.innerHTML = canvass_date;
+                       td2.innerHTML = supplier;
+                       td3.innerHTML = date_updated;
+                       td4.innerHTML = user;
+                       td5.innerHTML = requester;
+                       td6.innerHTML = remarks;
+                       td7.innerHTML = rfq_date;
+                       td8.innerHTML = amount;
+                       td9.innerHTML = philgeps;
+                       td10.innerHTML = lacking;
+                       td11.innerHTML = date_received;
+                       td12.innerHTML = copy;
+                       td13.innerHTML = paperremarks;
+                       td14.innerHTML = inspector;
+
+                       
+                   //    var Updatebtn = document.createElement("button");
+                  //     Updatebtn.innerHTML = "Update";
+
+                   //    var Deletebtn = document.createElement("button");
+                   //    Deletebtn.innerHTML = "Delete";
+                  //     Deletebtn.classList.add("btn-delete"); // add CSS class to the button
+                  //     const modal = document.getElementById('exampleModalCenter');
+
+                       trow.appendChild(td0);
+                       trow.appendChild(td1);
+                       trow.appendChild(td2);
+                       trow.appendChild(td3);
+                       trow.appendChild(td4);
+                       trow.appendChild(td5);
+                       trow.appendChild(td6);
+                       trow.appendChild(td7);
+                       trow.appendChild(td8);
+                       trow.appendChild(td9);
+                       trow.appendChild(td10);
+                       trow.appendChild(td11);
+                       trow.appendChild(td12);
+                       trow.appendChild(td13);
+                       trow.appendChild(td14);
+
+                 //      td14.appendChild(Updatebtn);
+
+                   //    td15.appendChild(Deletebtn);
+
+                   //    trow.appendChild(td14);
+                  //     trow.appendChild(td15);
+       
+                       tbody.appendChild(trow);
+                   }
+       
+                   function AddAllItemsToTable(SuccessfulPr){
+                       tbody.innerHTML = "";
+                       SuccessfulPr.forEach(Element => {
+                        AddItemToTable(Element.Pr_number, Element.Canvass_Date, Element.Supplier_Company, Element.Date_Updated, Element.End_user, Element.Requester, Element.Remarks, Element.Rfq_Date_Processed, Element.Amount, Element.Philgeps, Element.Lacking, Element.Date_Received, Element.Copy, Element.Paper_Remarks, Element.Inspector);
+                       });
+                   }
+       
+       //-----------GET ALL DATA-------------//
+                  // async function GetAllDataOnce(){
+                    //   const querySnapShot = await getDocs(collection(db, "Merchant"));
+       
+                      // var merchants = [];
+       
+                     //  querySnapShot.forEach(doc => {
+                       //    merchants.push(doc.data());
+                      // });
+                      // AddAllItemsToTable(merchants);
+                  // }
+                  // window.onload = GetAllDataOnce;
+       
+                   async function GetAllDataRealtime(){
+                      const dbRef = collection(db, "For-Canvassing");
+       
+                       onSnapshot(dbRef, (querySnapShot) => {
+                          var successfulprs = [];
+                          
+                          querySnapShot.forEach(doc => {
+                            successfulprs.push(doc.data());
+                               
+                          });
+                          AddAllItemsToTable(successfulprs);
+                       })
+                   }
+       
+                   window.onload = GetAllDataRealtime;
+       
+                   //-------SEARCH BOX FUNCTIONS---------//
+       
+                   var searchbox_1 = document.getElementById("searchbox-1");
+       
+                   searchbox_1.addEventListener('keyup', function(){
+                       var keyword = this.value;
+                       keyword = keyword.toUpperCase();
+                       var table_1 = document.getElementById('table-1');
+                       var all_tr = table_1.getElementsByTagName('tr');
+       
+                       for(var i=0; i<all_tr.length; i++){
+                           var all_columns = all_tr[i].getElementsByTagName('td');
+       
+                           for (var j=0; j<all_columns.length; j++){
+                              
+                               if(all_columns[j]){
+                                   var column_value = all_columns[j].innerText || all_columns[j].textContent;
+                                   column_value = column_value.toUpperCase();
+       
+                                   if(column_value.indexOf(keyword) > -1 ){
+                                       all_tr[i].style.display = '';
+                                       break;
+                                   }else{
+                                       all_tr[i].style.display = 'none';
+                                   }
+                           }
+                         }
+                       }
+                   })
+       
+               
+       //--------------REFERENCES---------------//
+       
+                 //  let NameBox = document.getElementById("Namebox");
+                 //  let RollBox = document.getElementById("Rollbox");
+                 //  let SecBox = document.getElementById("Secbox");
+                // let GenBox = document.getElementById("Genbox");
+       
+                 //  let insBtn = document.getElementById("Insbtn");
+                  // let selBtn = document.getElementById("Selbtn");
+                  // let updBtn = document.getElementById("Updbtn");
+                  // let delBtn = document.getElementById("Delbtn");
+       
+       //-------------ADDING DOCUMENT----------//
+       
+                  // async function AddDocument_CustomID(){
+                    //   var ref = doc(db,"TheStudentsList", RollBox.value);
+       
+                    //   await setDoc(
+                      //     ref, {
+                        //       NameOfStd: NameBox.value,
+                          //     RollNo: RollBox.value,
+                            //   Section: SecBox.value,
+                              // Gender: GenBox.value
+                          // }
+                      // )
+                      // .then(()=>{
+                        //   alert("Data Added Successfully");
+                      // })
+                      // .catch((error)=>{
+                        //   alert("Adding Failed, error:"+ error);
+                      // });
+                  // }
+       
+       //----------GETTING DOCUMENT------------//
+       
+                  // async function GetADocument(){
+                    //   var ref = doc(db, "TheStudentsList", RollBox.value);
+                     //  const docSnap = await getDoc(ref);
+       
+                      // if(docSnap.exists()){
+                        //   NameBox.value = docSnap.data().NameOfStd;
+                         //  SecBox.value = docSnap.data().Section;
+                         //  GenBox.value = docSnap.data().Gender;
+                      // }
+       
+                      // else{
+                        //   alert("No Such Document");
+                      // }
+                  // }
+       
+       //----------UPDATING DOCUMENT------------//
+       
+                  // async function UpdateFieldsInADocument(){
+                      // var ref = doc(db,"TheStudentsList", RollBox.value);
+       
+                      //await updateDoc(
+                        //   ref, {
+                          //    NameOfStd: NameBox.value,
+                           //    Section: SecBox.value,
+                       //        Gender: GenBox.value
+                         //  }
+                    //   )
+                      // .then(()=>{
+                     //      alert("Data Updated Successfully");
+                     //  })
+                     //  .catch((error)=>{
+                     //      alert("Update Failed, error:"+ error);
+                       //});
+                  // }
+       
+       //----------UPDATING DOCUMENT------------//
+       
+                  // async function DeleteDocument(){
+                      // var ref = doc(db, "TheStudentsList", RollBox.value);
+                      // const docSnap = await getDoc(ref);
+       
+                      // if(!docSnap.exists()){
+                       //    alert("Document does not exist");
+                      //     return;
+                     //  }
+       
+                     //  await deleteDoc(ref)
+                       //   .then(()=>{
+                       //    alert("Data Deleted Successfully");
+                     //  })
+                     //  .catch((error)=>{
+                       //    alert("Update Failed, error:"+ error);
+                      // });
+                  // }
+       
+       //---------Assign Events To Btns--------//
+       
+                   //---declaration para sa add document---//
+                  // insBtn.addEventListener("click", AddDocument_CustomID);
+                   //---declaration para sa get document---//
+                  // selBtn.addEventListener("click", GetADocument);
+                   //---declaration para sa update document---//
+                  // updBtn.addEventListener("click", UpdateFieldsInADocument);
+                   //---declaration para sa update document---//
+                  // delBtn.addEventListener("click", DeleteDocument);
+                 
+             
+                 </script>    
+
+</html>

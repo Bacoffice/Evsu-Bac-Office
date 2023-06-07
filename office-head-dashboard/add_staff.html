@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../img/evsu_title_logo.png" type="image/x-icon" />
+    <title>REGISTER NEW USER</title>
+    <link href="../css/styles.css" rel="stylesheet" /> 
+    <link rel="stylesheet" href="../css/add-update.css" />
+    
+    <style>
+
+    .container {
+    text-align: center;
+    }
+
+    .back-button {
+    margin-bottom: 10px;
+    }
+
+    .button-container {
+    display: flex;
+    justify-content: center;
+    }
+
+    .centered-button {
+    margin: 0 5px;
+    }
+
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
+    <script src="../js/webpage_checker.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script>
+</head>
+   
+    <body>
+        <div class="bg-light p-5 rounded" style="display: flex; justify-content: center; align-items: center; text-align: center;">
+            <h1>Add New BAC-OFFICE Staff Accounts</h1>
+        </div>
+
+        <div class="container">
+        
+            <button class="back-button" id="new-button" onclick="Office_Head_Dashboard(event)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+              </svg></button>
+        
+       
+            <div class="button-container">
+            
+                    <button class="centered-button" id="bac-staff" onclick="Bac_Staff(event)">BAC STAFF ACCOUNT</button><button class="centered-button" id="pre-bidding" onclick="Pre_Bidding(event)">PRE-BIDDING STAFF ACCOUNT</button>
+                    <button class="centered-button" id="post-bidding" onclick="Post_Bidding(event)">POST-BIDDING STAFF ACCOUNT</button><button class="centered-button" id="canvassing" onclick="Canvasser(event)">CANVASSING OFFICER ACCOUNT</button>
+                    <button class="centered-button" id="company-supplier" onclick="Company_Supplier(event)">COMPANY/SUPPLIER ACCOUNT</button><button class="centered-button" id="end-user" onclick="End_User(event)">END USER ACCOUNT</button>
+            
+            </div>
+
+        </div>
+
+    </body>
+</html>

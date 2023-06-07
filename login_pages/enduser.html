@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../img/evsu_title_logo.png" type="image/x-icon" />
+    <title>End User</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
+
+    <!-- Bootstrap core CSS -->
+<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      
+        .button-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 20px;
+        }
+
+        .form-floating {
+          margin-bottom: 1rem;
+        }
+
+    </style>
+    
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script>
+  </head>
+  <body class="body_form">
+    <div class="form">
+      <img src="../img/signup.svg">
+
+      <div class="centertext">
+        <h1 class="h3 mb-3 fw-normal">END USER</h1>
+      </div>
+
+      <!-- Email  -->
+      <br>
+      <div class="form-floating mb-3">
+        <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com">
+        <label for="email">Email address</label>
+      </div>
+      <!-- passWord -->
+      <div class="form-floating mb-3">
+        <input
+          type="password"
+          name="password"
+          class="form-control"
+          id="password"
+          placeholder="password"
+        />
+        <label for="password">Password</label> 
+      </div>
+
+      <!-- Sign In button -->
+      <button id="submit-btn" onclick="signIn()">Sign In</button>
+
+      <div class="centertext">
+        <br><p>Forgot your Password?</p>
+        <span ><a class="my-span" href="../pass_recovery/end-user-forgotpass.html">Click Here!</a></span>    
+      
+        <br><br><p class="mt-5 mb-3 text-muted">&copy;BAC-OFFICE 2022-2023</p>
+      </div>
+    </div>
+
+    <script src="../js_login_auth/end_user.SI.js"></script>
+    
+  </body>
+</html>
