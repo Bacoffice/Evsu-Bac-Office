@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="../img/evsu_title_logo.png" type="image/x-icon" />
+        <title>Add-Update-Delete File</title>
+        <link href="../css/styles.css" rel="stylesheet" /> 
+        <link rel="stylesheet" href="../css/add-update.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <style>
+            
+            label{display: inline-block; width: 80px}
+            
+            .container {
+            text-align: center;
+            }
+
+            .back-button {
+            margin-bottom: 10px;
+            }
+
+            .button-container {
+            display: flex;
+            justify-content: center;
+            }
+
+            .centered-button {
+            margin: 0 5px;
+            }
+        </style>
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app-compat.js"></script>
+   
+        <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-auth-compat.js"></script>
+    </head>
+    
+   
+    <body>
+        <button class="back-btn" onclick="PR_Dashboard(event)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </button><br>
+
+        <div class="form-container">
+            
+            <label>PR #</label> 
+            <input id="pr_num" type="number">
+
+            <label>End User Office</label> 
+            <input id="end_user" type="text">
+
+            <label>Requester's Name</label> 
+            <input id="requester" type="text"> 
+            
+            <label for="remarks">RFQ-Remarks</label>
+            <select id="remarks" name="remarks">
+                <option value="None">None</option>
+                <option value="Done">Done</option>
+                <option value="Not Done">Not Done</option>
+                
+            </select> 
+            
+            <label>RFQ Date Processed (If Done)</label> 
+            <input type="date" id="rfq_date">
+
+            <label for="amount">Less 50k?</label> 
+            <select id="amount" name="amount">
+                <option value="None">None</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <label>Philgeps Posting Date (If Above 50k)</label> 
+            <input type="date" id="philgeps"> 
+
+            <label>Lacking Documents</label> 
+            <input id="lacking" type="text">
+
+            <label>Date Issued/Submitted</label> 
+            <input type="date" id="submitted"> 
+
+            <label for="soft-copy">Soft Copy Available Online?</label> 
+            <select id="soft_copy" name="soft_copy">
+                <option value="None">None</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <label>Paper Remark</label> 
+            <input id="paper_remarks" type="text"> 
+
+            <label for="position">Inspected By:</label> 
+            <select id="position" name="position" >
+                <option value="Pre-Bidding Staff">Pre-Bidding Staff</option>
+            </select> 
+                <button id="insert-btn">
+                    <span>INCOMPLETE PR #'s</span>
+                </button>
+        </div>
+
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">Copyright &copy; BAC OFFICE 2023</div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+        <script src="../js/webpage_checker.js"></script>
+
+    <!-----------IMPORT + CONFIGURATION PART------->
+     
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+          
+            // Your web app's Firebase configuration
+       const firebaseConfig ={
+        apiKey: "AIzaSyDnQUrAr5PTdS1chHdHr1u91CrHiFSs5DM",
+        authDomain: "bac-office-files.firebaseapp.com",
+        projectId: "bac-office-files",
+        storageBucket: "bac-office-files.appspot.com",
+        messagingSenderId: "792811800505",
+        appId: "1:792811800505:web:d7297ca6af34406b55d868",
+        measurementId: "G-EGNTTZ71G3"
+};
+          
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+
+            import {
+                getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, addDoc, updateDoc, deleteDoc, deleteField
+            }
+                from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+          
+               const db = getFirestore();
+
+//--------------REFERENCES---------------//
+
+             let PR_NUM = document.getElementById("pr_num");
+             let USER = document.getElementById("end_user");
+             let REQUESTER = document.getElementById("requester");
+             let REMARKS = document.getElementById("remarks");
+             let RFQ_DATE = document.getElementById("rfq_date");
+             let AMOUNT = document.getElementById("amount");
+             let PHILGEPS = document.getElementById("philgeps");
+             let LACKING = document.getElementById("lacking");
+             let SUBMITTED = document.getElementById("submitted");
+             let COPY = document.getElementById("soft_copy");
+             let PAPER_REMARKS = document.getElementById("paper_remarks");
+             let INSPECTOR = document.getElementById("position");
+            
+            let insBtn = document.getElementById("insert-btn");
+            let selBtn = document.getElementById("select-btn");
+            let updBtn = document.getElementById("update-btn");
+            let lackingprs = document.getElementById("lackingprs-btn")
+            let delBtn = document.getElementById("delete-btn");
+
+//-------------ADDING DOCUMENT LACKING PR #'s----------//
+       async function showAddConfirmation() {
+            Swal.fire({
+                title: 'You want to add this file?',
+                text: "This file will be added to the Pre-Bid PR #'s",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-plus"></i> Yes, Add it!',
+                cancelButtonText: 'Cancel',
+                confirmButtonHtml: true
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                // Add logic here
+                try {
+
+            if (
+            PR_NUM.value === '' ||
+            USER.value === ''||
+            REQUESTER.value === '' ||
+            //REMARKS.value === 'None' ||
+            //RFQ_DATE.value === ''||
+            //AMOUNT.value === 'None' ||
+           //PHILGEPS.value === ''||
+            //LACKING.value === ''||
+            //SUBMITTED.value === ''||
+            //COPY.value === 'None' ||
+            //PAPER_REMARKS.value === 'None' ||
+            INSPECTOR.value === 'None' ||
+            INSPECTOR.value === ''
+            ) {
+                Swal.fire('Error!', "Please fill in all fields.", 'warning');
+            return false;
+            }
+
+            const ref = doc(db, 'Lacking-PR-#s', PR_NUM.value);
+            const timestamp = serverTimestamp();
+
+            const docSnap = await getDoc(ref);
+        if (docSnap.exists()) {
+            Swal.fire('Error!', 'Document with the same PR # already exists', 'warning');
+        // Reset the input fields
+            PR_NUM.value = '';
+            USER.value = '';
+            REQUESTER.value = '';
+            REMARKS.value = 'None';
+            RFQ_DATE.value = '';
+            AMOUNT.value = 'None';
+            PHILGEPS.value = '';
+            LACKING.value = '';
+            SUBMITTED.value = '';
+            COPY.value = 'None';
+            PAPER_REMARKS.value = '';
+            INSPECTOR.value = 'Pre-Bidding-Staff';
+            return;
+        }
+            await setDoc(ref, {
+            Pr_number: PR_NUM.value,
+            End_user: USER.value,
+            Requester: REQUESTER.value,
+            Remarks: REMARKS.value,
+            Rfq_Date_Processed: RFQ_DATE.value, 
+            Amount: AMOUNT.value,
+            Philgeps: PHILGEPS.value,
+            Lacking: LACKING.value,
+            Date_Received: SUBMITTED.value,
+            Copy: COPY.value,
+            Paper_Remarks: PAPER_REMARKS.value,
+            Inspector : INSPECTOR.value
+            //Submitted: timestamp, // Add the current timestamp
+            });
+            Swal.fire('Added!', 'File Added Successfully.', 'success');
+            // Reset the input fields
+            PR_NUM.value = '';
+            USER.value = '';
+            REQUESTER.value = '';
+            REMARKS.value = "None";
+            RFQ_DATE.value = '';
+            AMOUNT.value = "None";
+            PHILGEPS.value = '';
+            LACKING.value = '';
+            SUBMITTED.value = '';
+            COPY.value = "None";
+            PAPER_REMARKS.value = '';
+            INSPECTOR.value = "Pre-Bidding-Staff";
+            return;
+        } catch (error) {
+            console.error('Error adding document:', error);
+            Swal.fire('Adding failed an Error Occured', 'error');
+        }
+                //Swal.fire('Added!', 'File Added Successfully.', 'success');
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire('Cancelled');
+                }
+            });
+            }
+
+        //async function AddDocument_CustomID() {
+        //try {
+
+        //    if (
+         //   PR_NUM.value === '' ||
+        //    USER.value === ''||
+        //    REQUESTER.value === ''
+            //REMARKS.value === 'None' ||
+            //RFQ_DATE.value === ''||
+            //AMOUNT.value === 'None' ||
+           //PHILGEPS.value === ''||
+            //LACKING.value === ''||
+            //SUBMITTED.value === ''||
+            //COPY.value === 'None' ||
+            //PAPER_REMARKS.value === 'None' ||
+            //INSPECTOR.value === 'None'
+        //    ) {
+         //   alert("Please fill in all fields.");
+         //   return false;
+          //  }
+
+         //   const ref = doc(db, 'Lacking-PR-#s', PR_NUM.value);
+          //  const timestamp = serverTimestamp();
+
+         //   const docSnap = await getDoc(ref);
+        // if (docSnap.exists()) {
+        // alert('Document with the same UID already exists');
+        // Reset the input fields
+          //   PR_NUM.value = '';
+          //   USER.value = '';
+           //  REQUESTER.value = '';
+          //   REMARKS.value = 'None';
+          //   RFQ_DATE.value = '';
+          //   AMOUNT.value = 'None';
+          //   PHILGEPS.value = '';
+          //   LACKING.value = '';
+           //  SUBMITTED.value = '';
+           //  COPY.value = 'None';
+           //  PAPER_REMARKS.value = '';
+           //  INSPECTOR.value = 'Pre-Bidding-Staff';
+          //   return;
+        // }
+            // await setDoc(ref, {
+          //   Pr_number: PR_NUM.value,
+          //   End_user: USER.value,
+          //   Requester: REQUESTER.value,
+          //   Remarks: REMARKS.value,
+          //   Rfq_Date_Processed: RFQ_DATE.value, 
+           //  Amount: AMOUNT.value,
+           //  Philgeps: PHILGEPS.value,
+           //  Lacking: LACKING.value,
+          //   Date_Received: SUBMITTED.value,
+          //   Copy: COPY.value,
+           //  Paper_Remarks: PAPER_REMARKS.value,
+          //   Inspector : INSPECTOR.value
+           //  //Submitted: timestamp, // Add the current timestamp
+           //  });
+          //   alert('Data added successfully');
+           //  // Reset the input fields
+           //  PR_NUM.value = '';
+           //  USER.value = '';
+           //  REQUESTER.value = '';
+           //  REMARKS.value = "None";
+          //   RFQ_DATE.value = '';
+           //  AMOUNT.value = "None";
+           //  PHILGEPS.value = '';
+           //  LACKING.value = '';
+          //   SUBMITTED.value = '';
+          //   COPY.value = "None";
+          //   PAPER_REMARKS.value = '';
+           //  INSPECTOR.value = "Pre-Bidding-Staff";
+          //   return;
+        // } catch (error) {
+           //  console.error('Error adding document:', error);
+         //    alert('Adding failed Please Input Fields');
+        // }
+       //  }
+
+//----------GETTING DOCUMENT IN LACKING PR's------------//
+
+async function LackingPrs(){
+                var ref = doc(db, 'Lacking-PR-#s', PR_NUM.value);
+                const docSnap = await getDoc(ref);
+
+                if(docSnap.exists()){
+                   alert("Retrieved Successfully")
+                    USER.value = docSnap.data().End_user
+                    REQUESTER.value = docSnap.data().Requester
+                    REMARKS.value = docSnap.data().Remarks
+                    RFQ_DATE.value = docSnap.data().Rfq_Date_Processed
+                    AMOUNT.value = docSnap.data().Amount
+                    PHILGEPS.value = docSnap.data().Philgeps
+                    LACKING.value = docSnap.data().Lacking
+                    SUBMITTED.value = docSnap.data().Date_Received
+                    COPY.value = docSnap.data().Copy
+                    INSPECTOR.value = docSnap.data().Inspector
+                }
+                else{
+                    alert("File does not exist");
+                    PR_NUM.value = '';
+                    USER.value = '';
+                    REQUESTER.value = '';
+                    REMARKS.value = "None";
+                    RFQ_DATE.value = '';
+                    AMOUNT.value = "None";
+                    PHILGEPS.value = '';
+                    LACKING.value = '';
+                    SUBMITTED.value = '';
+                    COPY.value = "None";
+                    INSPECTOR.value = "Pre-Bidding-Staff";
+                    return;
+                }
+            }
+
+//----------ADDING DOCUMENT TO SUCCESSFUL PR's------------//
+
+async function AddDocument_successful() {
+  try {
+    const ref = doc(db, "Pre-Bidding PR's", PR_NUM.value);
+    
+    //const timestamp = serverTimestamp();
+
+    const docSnap = await getDoc(ref);
+    if (docSnap.exists()) {
+      alert('Document with the same PR # already exists');
+            // Reset the input fields           
+            PR_NUM.value = '';
+            USER.value = '';
+            REQUESTER.value = '';
+            REMARKS.value = "None";
+            RFQ_DATE.value = '';
+            AMOUNT.value = "None";
+            PHILGEPS.value = '';
+            LACKING.value = '';
+            SUBMITTED.value = '';
+            COPY.value = "None";
+            INSPECTOR.value = "Pre-Bidding-Staff";
+            return;
+    }
+    const refer = doc(db, "For-Canvassing", PR_NUM.value);
+    const docSnapss = await getDoc(refer);
+    if (docSnapss.exists()) {
+      alert('Document with the same PR # already exists');
+            // Reset the input fields           
+            PR_NUM.value = '';
+            USER.value = '';
+            REQUESTER.value = '';
+            REMARKS.value = "None";
+            RFQ_DATE.value = '';
+            AMOUNT.value = "None";
+            PHILGEPS.value = '';
+            LACKING.value = '';
+            SUBMITTED.value = '';
+            COPY.value = "None";
+            INSPECTOR.value = "Pre-Bidding-Staff";
+            return;
+    }
+
+    var reference = doc(db, 'Lacking-PR-#s', PR_NUM.value);
+                const docSnaps = await getDoc(reference);
+
+                if(!docSnaps.exists()){
+                    alert("Document not found in Unsuccessful PR #'s Table");
+                    // Reset the input fields           
+                    PR_NUM.value = '';
+                    USER.value = '';
+                    REQUESTER.value = '';
+                    REMARKS.value = "None";
+                    RFQ_DATE.value = '';
+                    AMOUNT.value = "None";
+                    PHILGEPS.value = '';
+                    LACKING.value = '';
+                    SUBMITTED.value = '';
+                    COPY.value = "None";
+                    INSPECTOR.value = "Pre-Bidding-Staff";
+                    return;
+                }
+
+                await deleteDoc(reference)
+                   .then(()=>{
+                })
+                .catch((error)=>{
+                    alert("Delete Failed, error:"+ error);
+               });
+
+        await setDoc(ref, {
+            Pr_number: PR_NUM.value,
+            End_user: USER.value,
+            Requester: REQUESTER.value,
+            Remarks: REMARKS.value,
+            Rfq_Date_Processed: RFQ_DATE.value, 
+            Amount: AMOUNT.value,
+            Philgeps: PHILGEPS.value,
+            Lacking: LACKING.value,
+            Date_Submitted: SUBMITTED.value,
+            Copy: COPY.value,
+            Inspector : INSPECTOR.value
+        //Submitted: timestamp, // Add the current timestamp
+        });
+
+        await setDoc(refer, {
+            Pr_number: PR_NUM.value,
+            End_user: USER.value,
+            Requester: REQUESTER.value,
+            Remarks: REMARKS.value,
+            Rfq_Date_Processed: RFQ_DATE.value, 
+            Amount: AMOUNT.value,
+            Philgeps: PHILGEPS.value,
+            Lacking: LACKING.value,
+            Date_Submitted: SUBMITTED.value,
+            Copy: COPY.value,
+            Inspector : INSPECTOR.value
+        //Submitted: timestamp, // Add the current timestamp
+        });
+
+    alert('Data added successfully');
+            // Reset the input fields           
+            PR_NUM.value = '';
+            USER.value = '';
+            REQUESTER.value = '';
+            REMARKS.value = "None";
+            RFQ_DATE.value = '';
+            AMOUNT.value = "None";
+            PHILGEPS.value = '';
+            LACKING.value = '';
+            SUBMITTED.value = '';
+            COPY.value = "None";
+            INSPECTOR.value = "Pre-Bidding-Staff";
+            return;
+
+  } catch (error) {
+    console.error('Error adding document:', error);
+    alert('Adding failed Please Input Fields');
+  }
+}
+
+   //----------GETTING DOCUMENT IN SUCCESSFUL PR#'s------------//
+
+   async function GetADocument(){
+        var ref = doc(db, "Pre-Bidding PR's", PR_NUM.value);
+        const docSnap = await getDoc(ref);
+
+            if(docSnap.exists()){
+                alert("Retrieved Successfully")
+                USER.value = docSnap.data().End_user
+                REQUESTER.value = docSnap.data().Requester
+                REMARKS.value = docSnap.data().Remarks
+                RFQ_DATE.value = docSnap.data().Rfq_Date_Processed
+                AMOUNT.value = docSnap.data().Amount
+                PHILGEPS.value = docSnap.data().Philgeps
+                LACKING.value = docSnap.data().Lacking
+                SUBMITTED.value = docSnap.data().Submitted
+                COPY.value = docSnap.data().Copy
+                INSPECTOR.value = docSnap.data().Inspector
+                }
+                else{
+                    alert("File does not exist");
+                 // Reset the input fields
+                 PR_NUM.value = '';
+                USER.value = '';
+                REQUESTER.value = '';
+                REMARKS.value = "None";
+                RFQ_DATE.value = '';
+                AMOUNT.value = "None";
+                PHILGEPS.value = '';
+                LACKING.value = '';
+                SUBMITTED.value = '';
+                COPY.value = "None";
+                INSPECTOR.value = "Pre-Bidding-Staff";
+                 return;
+                }
+            }
+
+//----------DELETING DOCUMENT IN SUCCESSFUL PR #'S AND IN FOR BIDDING------------//
+
+            async function DeleteDocument(){
+                var ref = doc(db, "Pre-Bidding PR's", PR_NUM.value);
+                const docSnap = await getDoc(ref);
+
+                if(!docSnap.exists()){
+                    alert("Document does not exist");
+                    PR_NUM.value = '';
+                    USER.value = '';
+                    REQUESTER.value = '';
+                    REMARKS.value = "None";
+                    RFQ_DATE.value = '';
+                    AMOUNT.value = "None";
+                    PHILGEPS.value = '';
+                    LACKING.value = '';
+                    SUBMITTED.value = '';
+                    COPY.value = "None";
+                    INSPECTOR.value = "Pre-Bidding-Staff";
+                    return;
+                }
+
+                var refer = doc(db, "For-Canvassing", PR_NUM.value);
+                const docSnapss = await getDoc(refer);
+
+                if(!docSnapss.exists()){
+                    alert("Document does not exist");
+                    PR_NUM.value = '';
+                    USER.value = '';
+                    REQUESTER.value = '';
+                    REMARKS.value = "None";
+                    RFQ_DATE.value = '';
+                    AMOUNT.value = "None";
+                    PHILGEPS.value = '';
+                    LACKING.value = '';
+                    SUBMITTED.value = '';
+                    COPY.value = "None";
+                    INSPECTOR.value = "Pre-Bidding-Staff";
+                    return;
+                }
+
+                await deleteDoc(ref)
+                   .then(()=>{
+                    //alert("File Deleted Successfully");
+                    PR_NUM.value = '';
+                    USER.value = '';
+                    REQUESTER.value = '';
+                    REMARKS.value = "None";
+                    RFQ_DATE.value = '';
+                    AMOUNT.value = "None";
+                    PHILGEPS.value = '';
+                    LACKING.value = '';
+                    SUBMITTED.value = '';
+                    COPY.value = "None";
+                    INSPECTOR.value = "Pre-Bidding-Staff";
+                    return;
+                })
+
+                await deleteDoc(refer)
+                   .then(()=>{
+                    alert("File Deleted Successfully");
+                    PR_NUM.value = '';
+                    USER.value = '';
+                    REQUESTER.value = '';
+                    REMARKS.value = "None";
+                    RFQ_DATE.value = '';
+                    AMOUNT.value = "None";
+                    PHILGEPS.value = '';
+                    LACKING.value = '';
+                    SUBMITTED.value = '';
+                    COPY.value = "None";
+                    INSPECTOR.value = "Pre-Bidding-Staff";
+                    return;
+                })
+                
+                .catch((error)=>{
+                    alert("Update Failed, error:"+ error);
+               });
+            }
+
+//---------Assign Events To Btns--------//
+
+            //---declaration para sa add document---//
+            insBtn.addEventListener("click", showAddConfirmation);
+            //---declaration para sa update document---//
+            //updBtn.addEventListener("click", AddDocument_successful);
+            //---declaration para sa get document---//
+            //selBtn.addEventListener("click", GetADocument);
+            //---declaration para sa get for biddings---//
+            //lackingprs.addEventListener("click", LackingPrs);
+            //---declaration para sa delete document---//
+           // delBtn.addEventListener("click", DeleteDocument);
+          
+          </script>
+          
+        </body>
+</html>
